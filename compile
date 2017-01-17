@@ -1,0 +1,1 @@
+javac -cp jogl-all.jar:gluegen-rt.jar:. $1

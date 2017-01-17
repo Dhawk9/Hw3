@@ -1,0 +1,1 @@
+java -cp jogl-all.jar:gluegen-rt.jar:. $1 $2 $3
