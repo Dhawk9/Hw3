@@ -50,19 +50,17 @@ public class Hw3 extends JPanel implements GLEventListener {
 
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
-        gl.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
 
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        gl.glColor3d(0.0, 1.0, 1.0);
+
+        gl.glLoadIdentity();
 
         int t = getHeight();
         System.out.println("The window width is " + t);
 
-        gl.glLoadIdentity();
-
-        if (input_int == 3) { // this is to move my triangle
-            gl.glTranslated(0.0, -0.2, 0.0);
-        }
+//        if (input_int == 3) { // this is to move my triangle
+//            gl.glTranslated(0.0, -0.2, 0.0);
+//        }
 
         if (input_int % 2 == 0) { // this will rotate the polygons with and even number of sides
             double rot = 360.0 / input_int;
@@ -70,45 +68,111 @@ public class Hw3 extends JPanel implements GLEventListener {
         }
 
         // Variable Declarations
-        float r = (float)(1.0);
-        float g = (float)(1.0);
-        float b = (float)(1.0);
         double angle = (2 * Math.PI) / input_int;
+        System.out.println("Angle " + angle);
         double x = 0, y = 0;
-        final int max_color = 256;
+        final double distance = 1.0472;
 
         gl.glBegin(GL2.GL_POLYGON);
 
-        for (int i = 1; i < max_color; i++) {
+        for (int i = 0; i < input_int; i++) {
 
             x = Math.sin(i * angle);
             y = Math.cos(i * angle);
 
-            int modulus = i % 3;
+            System.out.println(" Coordinates : (" + x + "," + y + ")");
 
-            if (modulus == 0) {
-                r = (256 - i) / max_color;
-                System.out.println("r = " + r + ",g = " + g + ", b = " + b);
-            }
-            if (modulus == 1) {
-                //Inside the green quadrant
-                g = (256 - i) / max_color;
-                System.out.println("r = " + r + ",g = " + g + ", b = " + b);
-            }
-            if (modulus == 2) {
-                //inside the blue quadrant
-                b = (256 - i) / 256;
-                System.out.println("r = " + r + ",g = " + g + ", b = " + b);
+            float degrees = getAngleDegrees(x, y);
+            System.out.println("Degrees : " + degrees);
+
+            // 0 - 60
+            if (degrees <= 60) {
+                double d = distanceBetweenPoints(x, y, 0.0, 1.0);
+                float value = (float) (d / distance);
+                gl.glColor3f(1, value, 0);
+            } else if (60 < degrees && degrees <= 120) {
+
+                double d = distanceBetweenPoints(x, y, 0.867, 0.5);
+                float value = (float) (d / distance);
+
+                gl.glColor3f(1 - value, 1, 0);
+            } else if (120 < degrees && degrees <= 180) {
+                double d = distanceBetweenPoints(x, y, 0.867, -0.5);
+
+                float value = (float) (d / distance);
+                gl.glColor3f(0, 1, value);
+            } else if (180 < degrees && degrees <= 240) {
+                double d = distanceBetweenPoints(x, y, 0.0, -1.0);
+
+                float value = (float) (d / distance);
+                gl.glColor3f(0, value - 1, 1);
+            } else if (240 < degrees && degrees <= 300) {
+                double d = distanceBetweenPoints(x, y, -0.867, -0.5);
+
+                float value = (float) (d / distance);
+                gl.glColor3f(1 - value, 0, 1);
+            } else {
+                double d = distanceBetweenPoints(x, y, -0.867, 0.5);
+
+                float value = (float) (d / distance);
+                gl.glColor3f(1, 0, value - 1);
             }
 
-            System.out.println("Modulus Value: " + modulus);
 
-            gl.glColor3d(r, g, b); // the if statements would change r,g,b each time
+            // 60 - 120
+
+
+            // 120 - 180
+
+
+            // 180 - 240
+
+
+            // 240 - 300
+
+
+            //300 - 0
+
+
+//            // RED
+//            if (colorAngle == 90) {
+//                gl.glColor3f(1, 0, 0);
+//            }
+//
+//            // GREEN
+//            if (colorAngle == 330) {
+//                gl.glColor3f(0, 1, 0);
+//            }
+//
+//            // BLUE
+//            if (colorAngle == 210) {
+//                gl.glColor3f(0, 0, 1);
+//            }
+
             gl.glVertex2d(x, y);
-            //System.out.println("x = " + x + ", y = " + y);
+
+            System.out.println("---------------------------------------------");
         }
 
         gl.glEnd();
+    }
+
+    private float getAngleDegrees(double x, double y) {
+        float angle = (float) Math.toDegrees(Math.atan2(x - 0, y - 0));
+
+        if (angle < 0) {
+            angle += 360;
+        }
+
+        return angle;
+    }
+
+    private float distanceBetweenPoints(double aX, double aY, double bX, double bY) {
+        float d = (float) Math.atan2(bY - aY, bX - aX);
+
+        System.out.println("Distance Degrees: " + Math.toDegrees(d));
+        System.out.println("Distance between points: " + d);
+        return d;
     }
 
     public void init(GLAutoDrawable drawable) {
